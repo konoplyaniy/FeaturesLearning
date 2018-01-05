@@ -2,18 +2,23 @@ package labmda.com;
 
 import labmda.com.interfaces.Printerable;
 import labmda.com.interfaces.Validable;
+import labmda.com.interfaces.Workable;
+import org.apache.log4j.BasicConfigurator;
 
 import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static labmda.com.DataGenerator.users;
+import static labmda.com.ExcelWriter.log;
 
 public class LambdaTest {
 
-    private static final Printerable printer = System.out::println;
+    private static final Printerable printer = log::info;
     private static final Predicate<User> isNameLong = (user -> user.getName().length() >= 8);
     private static final Validable isAgeAllowed = (Object o) -> {
         if (o instanceof User) {
@@ -23,18 +28,43 @@ public class LambdaTest {
         return false;
     };
 
+
     public static void main(String[] args) {
-        usersAgeAverage();
-        userMaxAge();
-        userMinAge();
-        usersNameLengthAverage();
+        BasicConfigurator.configure();
+      /*  long start = System.currentTimeMillis();
+       *//* List<Integer> list = new ArrayList<>();*//*
+        for (int i = 1; i <= 1000000; i++) {
+            *//*list.add(i);*//*
+            String s = "";
+            if (i%3==0)
+                s+="Fizz";
+            if (i%5==0)
+                s+="Buzz";
+            if (!s.isEmpty())
+                log.info(s);
+        }
+        *//*List<Integer> tempList = list.stream().filter(i -> (i % 3 == 0) || (i % 5 == 0)).collect(Collectors.toList());
+        tempList.forEach(i -> {
+            if (i % 15 == 0)
+                System.out.println("FizzBuzz");
+            else {
+                System.out.println(((i % 3 == 0) ? "Fizz" : "Buzz"));
+            }
+        });*//*
+        log.info(System.currentTimeMillis() - start);*/
+
+//        usersAgeAverage();
+//        userMaxAge();
+//        userMinAge();
+//        usersNameLengthAverage();
+//        userAgeStatistic();
+//        validUsersCount();
+//        userNameList();
+//        longNameUsersList();
+//        validUsersList();
+//        nameAgeMap();
+//        idNameMap();
         userAgeStatistic();
-        validUsersCount();
-        userNameList();
-        longNameUsersList();
-        validUsersList();
-        nameAgeMap();
-        idNameMap();
     }
 
     private static double usersNameLengthAverage() {
@@ -52,13 +82,16 @@ public class LambdaTest {
     }
 
     private static IntSummaryStatistics userAgeStatistic() {
+        IntSummaryStatistics statisticsByUsersAge = users.stream()
+                .collect(Collectors.summarizingInt(User::getAge));
+        printer.print("======SUMMARY=======");
+        printer.print("Number of Users: " + statisticsByUsersAge.getCount());
+        printer.print("Min age: " + statisticsByUsersAge.getMin());
+        printer.print("Max age: " + statisticsByUsersAge.getMax());
+        printer.print("Age average: " + statisticsByUsersAge.getAverage());
+
         return users.stream()
                 .collect(Collectors.summarizingInt(User::getAge));
-//        printer.print("======SUMMARY=======");
-//        printer.print("Number of Users: " + statisticsByUsersAge.getCount());
-//        printer.print("Min age: " + statisticsByUsersAge.getMin());
-//        printer.print("Max age: " + statisticsByUsersAge.getMax());
-//        printer.print("Age average: " + statisticsByUsersAge.getAverage());
     }
 
     private static void usersAgeAverage() {
@@ -76,6 +109,10 @@ public class LambdaTest {
         // key is user.getId, value is Name: + user.getName
     }
 
+    private void ttt() {
+        isNameLong.test(new User(0, "", 99));
+    }
+
     private static Map<String, Integer> nameAgeMap() {
         return users.stream()
                 .filter(isAgeAllowed::isValid) //оставили подходящих по ворзрасту
@@ -84,15 +121,48 @@ public class LambdaTest {
     }
 
     public static List<User> validUsersList() {
-        return users.stream().filter(user -> user.getAge() > 30).collect(Collectors.toList());
+        return users.stream()
+                .filter(user -> user.getAge() > 30)
+                .collect(Collectors.toList());
     }
 
     public static List<User> longNameUsersList() {
-        return users.stream().filter(isNameLong).collect(Collectors.toList());
+        return users.stream()
+                .filter(isNameLong)
+                .collect(Collectors.toList());
     }
 
     private static List<String> userNameList() {
+        System.out.println(worker.work(1200));
+        System.out.println(ww.apply(1200L));
         return users.stream().map(User::getName).collect(Collectors.toList());
+    }
+
+    private static Function<Long, String> ww = (timeDiff) -> {
+        long diffSeconds = timeDiff / 1000 % 60;
+        long diffMinutes = timeDiff / (60 * 1000) % 60;
+        long diffHours = timeDiff / (60 * 60 * 1000) % 24;
+        return (diffHours == 0 ? "" : diffHours + "h ") +
+                (diffMinutes == 0 ? "" : diffMinutes + "m ") +
+                (diffSeconds == 0 ? "" : diffSeconds + "s ");
+    };
+
+    private static Workable worker = (long timeDiff) -> {
+        long diffSeconds = timeDiff / 1000 % 60;
+        long diffMinutes = timeDiff / (60 * 1000) % 60;
+        long diffHours = timeDiff / (60 * 60 * 1000) % 24;
+        return (diffHours == 0 ? "" : diffHours + "h ") +
+                (diffMinutes == 0 ? "" : diffMinutes + "m ") +
+                (diffSeconds == 0 ? "" : diffSeconds + "s ");
+    };
+
+    private String getLongAsTime(long timeDiff) {
+        long diffSeconds = timeDiff / 1000 % 60;
+        long diffMinutes = timeDiff / (60 * 1000) % 60;
+        long diffHours = timeDiff / (60 * 60 * 1000) % 24;
+        return (diffHours == 0 ? "" : diffHours + "h ") +
+                (diffMinutes == 0 ? "" : diffMinutes + "m ") +
+                (diffSeconds == 0 ? "" : diffSeconds + "s ");
     }
 
     private static long validUsersCount() {

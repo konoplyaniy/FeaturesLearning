@@ -7,18 +7,19 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import static labmda.com.DataGenerator.users;
+import static labmda.com.ExcelWriter.log;
 import static labmda.com.LambdaTest.*;
 
 class ExcelSheets {
     private XSSFWorkbook currentBook;
 
-    public ExcelSheets(XSSFWorkbook currentBook) {
+    ExcelSheets(XSSFWorkbook currentBook) {
         this.currentBook = currentBook;
     }
 
     void addIdNameToBook() {
         double start = System.currentTimeMillis();
-        System.out.println("Create sheet ID Name");
+        log.info("Create sheet ID Name");
         XSSFSheet idNameSheet = currentBook.createSheet("ID + Name ");
         Row row = idNameSheet.createRow(0);
         row.createCell(0).setCellValue("User ID");
@@ -28,42 +29,40 @@ class ExcelSheets {
             newRow.createCell(0).setCellValue(id);
             newRow.createCell(1).setCellValue(name);
         });
-        System.out.println("duration: " + (System.currentTimeMillis() - start) + " in ms");
+        log.info("addIdNameToBook duration: (in ms)" + (System.currentTimeMillis() - start));
     }
 
     void addLongNameUsersToBook() {
         double start = System.currentTimeMillis();
-        System.out.println("Create sheet Valid Users");
+        log.info("Create sheet Valid Users");
         XSSFSheet longNameUsersSheet = currentBook.createSheet("Long name users");
         addRowTitleForUser(longNameUsersSheet);
         longNameUsersList().forEach(user -> addUserAsRow(longNameUsersSheet, user));
-        System.out.println("duration: " + (System.currentTimeMillis() - start) + " in ms");
+        log.info("addLongNameUsersToBook duration(in ms): " + (System.currentTimeMillis() - start));
     }
 
-    public void addValidUsersToBook() {
+    void addValidUsersToBook() {
         double start = System.currentTimeMillis();
-        System.out.println("Create sheet Valid Users");
+        log.info("Create sheet Valid Users");
         XSSFSheet validUsersSheet = currentBook.createSheet("Valid users");
         addRowTitleForUser(validUsersSheet);
         validUsersList().forEach(user -> addUserAsRow(validUsersSheet, user));
-        System.out.println("duration: " + (System.currentTimeMillis() - start) + " in ms");
+        log.info("addValidUsersToBook duration(in ms): " + (System.currentTimeMillis() - start));
     }
 
-    public void addUsersToBook() {
+    void addUsersToBook() {
         double start = System.currentTimeMillis();
-        System.out.println("Create sheet All Users");
+        log.info("Create sheet All Users");
         XSSFSheet allUsersSheet = currentBook.createSheet("All Users");
         allUsersSheet.createFreezePane(3, 1);
         allUsersSheet.autoSizeColumn(0);
         allUsersSheet.autoSizeColumn(1);
         allUsersSheet.autoSizeColumn(2);
-        System.out.println("Add titles for columns");
+        log.info("Add titles for columns");
         addRowTitleForUser(allUsersSheet);
-
-        System.out.println("Generate data for table");
-
+        log.info("Generate data for table");
         users.forEach(user -> addUserAsRow(allUsersSheet, user));
-        System.out.println("duration: " + (System.currentTimeMillis() - start) + " in ms");
+        log.info("addUsersToBook duration(in ms): " + (System.currentTimeMillis() - start));
     }
 
     private void addRowTitleForUser(XSSFSheet sheet) {

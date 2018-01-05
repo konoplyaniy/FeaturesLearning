@@ -4,8 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static labmda.com.ExcelWriter.log;
+
 public class DataGenerator {
-    private final static List<String> names = new ArrayList<String>() {{
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String VALERIY = "VALERIY";
+//    private static final String TETYANA = "TETYANA";
+//    private static final String VITALIY = "VITALIY";
+//    private static final String IVAN = "IVAN";
+//    private static final String ALLA = "ALLA";
+//    private static final String SERGIY = "SERGIY";
+//    private static final String VICTOR = "VICTOR";
+//    private static final String LYUDMILA = "LYUDMILA";
+//    private static final String ALINA = "ALINA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+//    private static final String SVITLANA = "SVITLANA";
+
+
+
+    private static final List<String> names = new ArrayList<String>() {{
         add("Svitlana");
         add("Valeriy");
         add("Tetyana");
@@ -1034,7 +1057,7 @@ public class DataGenerator {
 
     public static void main(String[] args) {
         for (int i = 0; i < 1000; i++) {
-            System.out.println("add(new User(" + i + ", \"" + names.get(getRandom()) + "\", " + getRandomAge() + "));");
+            log.info("add(new User(" + i + ", \"" + names.get(getRandom()) + "\", " + getRandomAge() + "));");
         }
 
 
